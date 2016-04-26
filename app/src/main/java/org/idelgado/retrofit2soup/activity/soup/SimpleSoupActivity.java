@@ -1,9 +1,10 @@
-package org.idelgado.retrofit2soup.activity;
+package org.idelgado.retrofit2soup.activity.soup;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 
-import org.idelgado.retrofit2soup.R;
+import org.idelgado.retrofit2soup.activity.base.BaseActivity;
+import org.idelgado.retrofit2soup.adapter.ContributorAdapter;
 import org.idelgado.retrofit2soup.model.Contributor;
 import org.idelgado.retrofit2soup.provider.GithubService;
 
@@ -12,14 +13,12 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import timber.log.Timber;
 
-public class SoupActivity extends AppCompatActivity {
+public class SimpleSoupActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         GithubService.GitHub github = GithubService.create();
 
@@ -29,15 +28,14 @@ public class SoupActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Contributor>> call, Response<List<Contributor>> response) {
                 List<Contributor> contributors = response.body();
-                for (Contributor contributor : contributors) {
-                    Timber.i(contributor.login + " (" + contributor.contributions + ")");
-                }
+
+                ContributorAdapter contributorAdapter = new ContributorAdapter(contributors);
+                recyclerView.setAdapter(contributorAdapter);
             }
 
             @Override
             public void onFailure(Call<List<Contributor>> call, Throwable t) {
-                // Should we keep re-trying indefinitely?
-                call.enqueue(this);
+                // What can we do here?
             }
         });
 

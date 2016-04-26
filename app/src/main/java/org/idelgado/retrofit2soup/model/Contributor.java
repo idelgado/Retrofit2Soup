@@ -8,4 +8,9 @@ public class Contributor {
         this.login = login;
         this.contributions = contributions;
     }
+
+    @Override
+    public String toString() {
+       return String.format("%5d %s", contributions, login);
+    }
 }
