@@ -23,6 +23,8 @@ import timber.log.Timber;
 
 public class RxTopReposActivity extends BaseActivity {
 
+    List<Repo> results = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,14 +48,31 @@ public class RxTopReposActivity extends BaseActivity {
                 .flatMap(new Func1<List<Contributor>, Observable<List<Repo>>>() {
                     @Override
                     public Observable<List<Repo>> call(List<Contributor> contributors) {
+                        Observable<List<Repo>> observers = null;
 
-                        return github.repos(contributors.get(0).login);
+                        for(Contributor contributor : contributors) {
+
+                            Observable<List<Repo>> reposObserver = github.repos(contributor.login)
+                                    .subscribeOn(Schedulers.newThread())
+                                    .observeOn(AndroidSchedulers.mainThread());
+
+                            if(observers == null) {
+                                observers = reposObserver;
+                            } else {
+                                // Merge it with previous observable
+                                observers = observers.concatWith(reposObserver);
+                            }
+                        }
+
+                        return observers;
                     }
                 })
                 .subscribe(new Subscriber<List<Repo>>() {
                     @Override
                     public void onCompleted() {
                         Timber.i("Completed");
+                        ModelObjectAdapter modelObjectAdapter = new ModelObjectAdapter(results);
+                        recyclerView.setAdapter(modelObjectAdapter);
                     }
 
                     @Override
@@ -63,29 +82,10 @@ public class RxTopReposActivity extends BaseActivity {
 
                     @Override
                     public void onNext(List<Repo> repos) {
-                        ModelObjectAdapter modelObjectAdapter = new ModelObjectAdapter(repos);
-                        recyclerView.setAdapter(modelObjectAdapter);
+                        results.addAll(Filter.containsAndroid(repos));
                     }
                 });
 
     }
-        /**
-                .flatMap(new Func1<List<Contributor>, Observable<List<Repo>>>() {
-                    @Override
-                    public Observable<List<Repo>> call(List<Contributor> contributors) {
-                        Observable<List<Repo>> observers = null;
 
-                        for(Contributor contributor : contributors) {
-                            Observable<List<Repo>> reposObserver = github.repos(contributor.login);
-                            if(observers == null) {
-                                observers = reposObserver;
-                            } else {
-                                observers = observers.concatWith(reposObserver);
-                            }
-                        }
-
-                        return observers;
-                    }
-                })
-         **/
 }

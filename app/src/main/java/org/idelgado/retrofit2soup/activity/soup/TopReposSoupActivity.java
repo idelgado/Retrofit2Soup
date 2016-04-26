@@ -11,9 +11,7 @@ import org.idelgado.retrofit2soup.util.Filter;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,7 +19,7 @@ import retrofit2.Response;
 
 public class TopReposSoupActivity extends BaseActivity {
 
-    Set<Repo> repoSet = new HashSet<>();
+    List<Repo> repoList = new ArrayList<>();
     int callbackCount = 0;
     int contributorSize;
 
@@ -66,12 +64,12 @@ public class TopReposSoupActivity extends BaseActivity {
 
                 Collection<Repo> containsAndroidCollection = Filter.containsAndroid(repos);
 
-                repoSet.addAll(containsAndroidCollection);
+                repoList.addAll(containsAndroidCollection);
 
                 callbackCount++;
 
                 if(callbackCount  == contributorSize) {
-                    setAdapter(repoSet);
+                    setAdapter(repoList);
                 }
             }
 
