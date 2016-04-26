@@ -1,6 +1,7 @@
 package org.idelgado.retrofit2soup.provider;
 
 import org.idelgado.retrofit2soup.model.Contributor;
+import org.idelgado.retrofit2soup.model.Repo;
 
 import java.util.List;
 
@@ -21,6 +22,9 @@ public class GithubService {
         Call<List<Contributor>> contributors(
                 @Path("owner") String owner,
                 @Path("repo") String repo);
+        @GET("/users/{owner}/repos")
+        Call<List<Repo>> repos(
+                @Path("owner") String owner);
     }
 
     public static GitHub create() {
@@ -37,6 +41,9 @@ public class GithubService {
         Observable<List<Contributor>> contributors(
                 @Path("owner") String owner,
                 @Path("repo") String repo);
+        @GET("/users/{owner}/repos")
+        Observable<List<Repo>> repos(
+                @Path("owner") String owner);
     }
 
     public static GitHubRx createRx() {

@@ -6,14 +6,17 @@ import org.idelgado.retrofit2soup.activity.base.BaseActivity;
 import org.idelgado.retrofit2soup.adapter.ModelObjectAdapter;
 import org.idelgado.retrofit2soup.model.Contributor;
 import org.idelgado.retrofit2soup.provider.GithubService;
+import org.idelgado.retrofit2soup.util.Filter;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SimpleSoupActivity extends BaseActivity {
+public class FilterSoupActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +31,9 @@ public class SimpleSoupActivity extends BaseActivity {
             public void onResponse(Call<List<Contributor>> call, Response<List<Contributor>> response) {
                 List<Contributor> contributors = response.body();
 
-                ModelObjectAdapter modelObjectAdapter = new ModelObjectAdapter(contributors);
+                Collection<Contributor> frequentContributors = Filter.isFrequentContributor(contributors);
+
+                ModelObjectAdapter modelObjectAdapter = new ModelObjectAdapter(new ArrayList(frequentContributors));
                 recyclerView.setAdapter(modelObjectAdapter);
             }
 

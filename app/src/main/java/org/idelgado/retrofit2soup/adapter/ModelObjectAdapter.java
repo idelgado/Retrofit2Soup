@@ -7,12 +7,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.idelgado.retrofit2soup.R;
-import org.idelgado.retrofit2soup.model.Contributor;
 
 import java.util.List;
 
-public class ContributorAdapter extends RecyclerView.Adapter<ContributorAdapter.ViewHolder> {
-    private List<Contributor> contributors;
+public class ModelObjectAdapter<T> extends RecyclerView.Adapter<ModelObjectAdapter.ViewHolder> {
+    private List<T> modelObject;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView contributorTextView;
@@ -22,14 +21,14 @@ public class ContributorAdapter extends RecyclerView.Adapter<ContributorAdapter.
         }
     }
 
-    public ContributorAdapter(List<Contributor> contributors) {
-        this.contributors = contributors;
+    public ModelObjectAdapter(List<T> modelObject) {
+        this.modelObject = modelObject;
     }
 
     @Override
-    public ContributorAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ModelObjectAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.contributor_text_view, parent, false);
+                .inflate(R.layout.model_object_text_view, parent, false);
 
         ViewHolder vh = new ViewHolder((TextView)v);
         return vh;
@@ -37,12 +36,12 @@ public class ContributorAdapter extends RecyclerView.Adapter<ContributorAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Contributor contributor = contributors.get(position);
+        T contributor = modelObject.get(position);
         holder.contributorTextView.setText(contributor.toString());
     }
 
     @Override
     public int getItemCount() {
-        return contributors.size();
+        return modelObject.size();
     }
 }
